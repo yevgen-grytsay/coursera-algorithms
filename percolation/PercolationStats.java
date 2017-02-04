@@ -18,11 +18,7 @@ public class PercolationStats {
         x = new double[trials];
         this.n = n;
         this.trials = trials;
-
-        percs = new Percolation[trials];
-        for (int i = 0; i < trials; i++) {
-            percs[i] = new Percolation(n);
-        }
+        runAll();
     }
 
     public static void main(String[] args) {
@@ -39,7 +35,7 @@ public class PercolationStats {
 
     private void runAll() {
         for (int i = 0; i < trials; i++) {
-            run(i, percs[i]);
+            run(i);
         }
     }
 
@@ -68,8 +64,9 @@ public class PercolationStats {
         return xDash + mode * (1.96 * StdStats.stddev(x) / Math.sqrt(trials));
     }
 
-    private void run(int i, final Percolation p) {
+    private void run(final int i) {
         int[] nodes = createNodeQueue();
+        Percolation p = new Percolation(n);
         int ni = 0;
         double lo = -1;
         int total = n*n;
