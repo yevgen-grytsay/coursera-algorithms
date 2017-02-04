@@ -73,14 +73,20 @@ public class Percolation {
     }
 
     private void setEdgeGroupsOnce(int row, int node) {
-        if (row == 0 && top == -1) {
-            top = node;
+        if (row == 0) {
+            if (top > -1) {
+                uf.union(top, node);
+            } else {
+                top = node;
+            }
         }
-        if (row == 0 && top > -1) {
-            uf.union(top, node);
-        }
-        if (row == n - 1 && bottom == -1) {
-            bottom = node;
+
+        if (row == n - 1) {
+            if (bottom > -1) {
+                uf.union(bottom, node);
+            } else {
+                bottom = node;
+            }
         }
     }
 

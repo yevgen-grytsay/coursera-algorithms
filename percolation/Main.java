@@ -3,7 +3,6 @@ import edu.princeton.cs.algs4.StdIn;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -13,35 +12,32 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        String pathname = "d:\\Education\\Coursera - Algorithms\\percolation\\input8-no.txt";
+        /*
+         * Test 4: check for backwash with predetermined sites
+         * filename = input20.txt
+         * filename = input10.txt - percolates() returns wrong value [after 56 sites opened]
+         * - student = false
+         * - reference = true
+         * - failed after call 56 to isOpen()
+         */
+        String pathname = "d:\\Education\\Coursera - Algorithms\\percolation\\input10.txt";
         FileInputStream f = new FileInputStream(new File(pathname));
         Scanner s = new Scanner(f);
-        String line;
-        ArrayList<String> lines = new ArrayList<String>();
-        while (s.hasNext()) {
-            line = s.nextLine();
-            if (line.equals("")) {
-                break;
-            }
-            lines.add(line);
-        }
-        System.out.println(lines);
-        int n = Integer.parseInt(lines.remove(0));
+
+        int n = s.nextInt();
         Percolation p = new Percolation(n);
         int i = 1;
-        for (String ln: lines) {
-            String[] parts = ln.split(" ");
-            int row = Integer.parseInt(parts[0]);
-            int col = Integer.parseInt(parts[1]);
+        while (s.hasNext()) {
+            int row = s.nextInt();
+            int col = s.nextInt();
             p.open(row, col);
-            System.out.println(String.format("%d: %s", i, Arrays.asList(row, col)));
-            System.out.println(p.isFull(row, col));
+            System.out.println(String.format("%d: %s, isFull(%d, %d): %s",
+                    i, Arrays.asList(row, col), row, col, p.isFull(row, col)));
             ++i;
-//            if (i == 15) {
-//                 break;
-//            }
         }
 
+
+        System.out.println(p.percolates());
 //        Percolation p = new Percolation(2);
 //        System.out.println(p.percolates());
 //
