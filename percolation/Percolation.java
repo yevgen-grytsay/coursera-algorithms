@@ -20,9 +20,9 @@ public class Percolation {
 
     public void open(int outerRow, int outerCol) {
         validateOuterCoordinates(outerRow, outerCol);
+        if (isOpen(outerRow, outerCol)) return;
         int row = outerRow - 1;
         int col = outerCol - 1;
-        if (isOpen(outerRow, outerCol)) return;
         int tRow = Math.max(row - 1, 0);
         int bRow = Math.min(row + 1, n - 1);
         int lCol = Math.max(col - 1, 0);
@@ -57,7 +57,7 @@ public class Percolation {
     }
 
     private static void validateOuterCoordinates(int outerRow, int outerCol) {
-        if (outerCol <= 0 || outerCol <= 0) throw new IllegalArgumentException();
+        if (outerRow <= 0 || outerCol <= 0) throw new IllegalArgumentException();
     }
 
     private void connect(int p, int... other) {
