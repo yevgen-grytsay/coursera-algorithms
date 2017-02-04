@@ -18,6 +18,10 @@ public class Percolation {
         uf = new QuickFindUF(n * n);
     }
 
+    public void open(int node) {
+        open(row(node), col(node));
+    }
+
     public void open(int row, int col) {
         if (isOpen(row, col)) return;
         int tRow = Math.max(row - 1, 0);
