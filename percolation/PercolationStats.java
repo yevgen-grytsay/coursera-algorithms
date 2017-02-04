@@ -1,8 +1,9 @@
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
-import java.util.*;
-import java.util.stream.DoubleStream;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.Arrays;
 
 public class PercolationStats {
 
@@ -21,14 +22,15 @@ public class PercolationStats {
     }
 
     public static void main(String[] args) {
-        PercolationStats stats = new PercolationStats(Integer.valueOf(args[0])
-                , Integer.valueOf(args[1]));
+        PercolationStats stats = new PercolationStats(
+                Integer.parseInt(args[0]),
+                Integer.parseInt(args[1]));
 
         stats.runAll();
         System.out.println(String.format("mean = %f", stats.mean()));
         System.out.println(String.format("stddev = %f", stats.stddev()));
-        System.out.println(String.format("95%% confidence interval = %s"
-                , Arrays.asList(stats.confidenceLo(), stats.confidenceHi())));
+        System.out.println(String.format("95%% confidence interval = %s",
+                Arrays.asList(stats.confidenceLo(), stats.confidenceHi())));
     }
 
     private void runAll() {
@@ -54,17 +56,23 @@ public class PercolationStats {
     }
 
     private double confidence(int mode) {
-        double xDash = DoubleStream.of(x).sum() / trials;
+        double sum = 0;
+        for (double number: x) {
+            sum += number;
+        }
+        double xDash = sum / trials;
         return xDash + mode * (1.96 * StdStats.stddev(x) / Math.sqrt(trials));
     }
 
-    private void run(int i) {
+    private void run(final int i) {
         Percolation p = new Percolation(n);
-        Queue<Integer> nodes = createNodeQueue();
+        int[] nodes = createNodeQueue();
+        int ni = 0;
         double lo = -1;
-        while (!nodes.isEmpty()) {
-            int node = nodes.remove();
-            p.open(node);
+        int total = n*n;
+        while (ni < total) {
+            int node = nodes[ni++];
+            p.open(node/n, node % n);
             if (p.percolates()) {
                 lo = (double) p.numberOfOpenSites() / (float) (n * n);
                 break;
@@ -73,12 +81,12 @@ public class PercolationStats {
         this.x[i] = lo;
     }
 
-    private Queue<Integer> createNodeQueue() {
-        Integer[] nodes = new Integer[n*n];
+    private int[] createNodeQueue() {
+        int[] nodes = new int[n*n];
         for (int i = 0; i < n*n; i++) {
             nodes[i] = i;
         }
         StdRandom.shuffle(nodes);
-        return new LinkedList<>(Arrays.asList(nodes));
+        return nodes;
     }
 }

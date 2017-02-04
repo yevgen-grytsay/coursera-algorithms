@@ -1,11 +1,11 @@
-import edu.princeton.cs.algs4.QuickFindUF;
+import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 /**
  * Created by yevgen on 04.02.2017.
  */
 public class Percolation {
     private final int n;
-    private final QuickFindUF uf;
+    private final WeightedQuickUnionUF uf;
     private boolean[][] openStatus;
     private int top = -1;
     private int bottom = -1;
@@ -15,11 +15,7 @@ public class Percolation {
         if (n <= 0) throw new IllegalArgumentException();
         this.n = n;
         openStatus = new boolean[n][n];
-        uf = new QuickFindUF(n * n);
-    }
-
-    public void open(int node) {
-        open(row(node), col(node));
+        uf = new WeightedQuickUnionUF(n * n);
     }
 
     public void open(int row, int col) {
@@ -34,11 +30,11 @@ public class Percolation {
 
         numberOfOpen++;
         openStatus[row][col] = true;
-        connect(node
-                , toNode(row, rCol)
-                , toNode(row, lCol)
-                , toNode(tRow, col)
-                , toNode(bRow, col));
+        connect(node,
+                toNode(row, rCol),
+                toNode(row, lCol),
+                toNode(tRow, col),
+                toNode(bRow, col));
     }
 
     private void connect(int p, int... other) {
@@ -69,7 +65,7 @@ public class Percolation {
         if (row == 0 && top == -1) {
             top = node;
         }
-        if (row == n - 1 && bottom == - 1) {
+        if (row == n - 1 && bottom == -1) {
             bottom = node;
         }
     }
