@@ -8,7 +8,6 @@ public class PercolationStats {
     private int n;
     private int trials;
     private double[] x;
-    private Percolation[] percs;
 
     public PercolationStats(int n, int trials) {
         if (n <= 0 || trials <= 0) {
