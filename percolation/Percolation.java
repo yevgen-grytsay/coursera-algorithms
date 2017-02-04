@@ -9,14 +9,17 @@ public class Percolation {
     private boolean[][] openStatus;
     private int top = -1;
     private int bottom = -1;
+    private int numberOfOpen;
 
     public Percolation(int n) {
+        if (n <= 0) throw new IllegalArgumentException();
         this.n = n;
         openStatus = new boolean[n][n];
         uf = new QuickFindUF(n * n);
     }
 
     public void open(int row, int col) {
+        if (isOpen(row, col)) return;
         int tRow = Math.max(row - 1, 0);
         int bRow = Math.min(row + 1, n - 1);
         int lCol = Math.max(col - 1, 0);
@@ -25,6 +28,7 @@ public class Percolation {
         int node = toNode(row, col);
         setEdgeGroupsOnce(row, node);
 
+        numberOfOpen++;
         openStatus[row][col] = true;
         connect(node
                 , toNode(row, rCol)
@@ -43,6 +47,14 @@ public class Percolation {
 
     public boolean isOpen(int row, int col) {
         return openStatus[row][col];
+    }
+
+    public boolean isFull(int row, int col) {
+        return top > -1 && isOpen(row, col) && uf.connected(toNode(row, col), top);
+    }
+
+    public int numberOfOpenSites() {
+        return numberOfOpen;
     }
 
     private boolean isOpen(int node) {

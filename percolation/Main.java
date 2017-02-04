@@ -10,9 +10,9 @@ public class Main {
         System.out.println(p.percolates());
 
         p.open(1, 1);
-        System.out.println(p.percolates());
+        System.out.println(String.format("Percolates: %s, isFull(1, 1): %s", p.percolates(), p.isFull(1, 1)));
 
         p.open(0, 1);
-        System.out.println(p.percolates());
+        System.out.println(String.format("Percolates: %s, isFull(1, 1): %s", p.percolates(), p.isFull(1, 1)));
     }
 }
