@@ -42,8 +42,12 @@ public class Percolation {
 
     public boolean isFull(int outerRow, int outerCol) {
         validateOuterCoordinates(outerRow, outerCol);
+        boolean isOpen = isOpen(outerRow, outerCol);
+        if (outerRow == 1 && isOpen) {
+            return true;
+        }
         return top > -1
-                && isOpen(outerRow, outerCol)
+                && isOpen
                 && uf.connected(toNode(outerRow - 1, outerCol - 1), top);
     }
 
@@ -56,8 +60,14 @@ public class Percolation {
         return numberOfOpen;
     }
 
-    private static void validateOuterCoordinates(int outerRow, int outerCol) {
-        if (outerRow <= 0 || outerCol <= 0) throw new IllegalArgumentException();
+    private void validateOuterCoordinates(int outerRow, int outerCol) {
+        int total = n * n;
+        if (outerRow <= 0
+                || outerCol <= 0
+                || outerRow > n
+                || outerCol > n) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private void connect(int p, int... other) {
@@ -81,17 +91,20 @@ public class Percolation {
             }
         }
 
-        if (row == n - 1) {
-            if (bottom > -1) {
-                uf.union(bottom, node);
-            } else {
-                bottom = node;
-            }
+        if (row == n - 1 && bottom == -1) {
+            bottom = node;
         }
     }
 
     public boolean percolates() {
-        return top > -1 && bottom > -1 && uf.connected(top, bottom);
+        if (top == -1) return false;
+        int total = n * n;
+        for (int node = total - n; node < total; node++) {
+            if (isFull(row(node) + 1, col(node) + 1)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int col(int node) {

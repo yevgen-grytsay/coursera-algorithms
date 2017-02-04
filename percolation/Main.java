@@ -20,7 +20,7 @@ public class Main {
          * - reference = true
          * - failed after call 56 to isOpen()
          */
-        String pathname = "d:\\Education\\Coursera - Algorithms\\percolation\\input10.txt";
+        String pathname = "d:\\Education\\Coursera - Algorithms\\percolation\\input6.txt";
         FileInputStream f = new FileInputStream(new File(pathname));
         Scanner s = new Scanner(f);
 
@@ -36,8 +36,8 @@ public class Main {
             ++i;
         }
 
-
         System.out.println(p.percolates());
+//        System.out.println(p.percolates());
 //        Percolation p = new Percolation(2);
 //        System.out.println(p.percolates());
 //
