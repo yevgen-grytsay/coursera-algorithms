@@ -19,6 +19,7 @@ public class Percolation {
     }
 
     public void open(int outerRow, int outerCol) {
+        validateOuterCoordinates(outerRow, outerCol);
         int row = outerRow - 1;
         int col = outerCol - 1;
         if (isOpen(outerRow, outerCol)) return;
@@ -40,17 +41,23 @@ public class Percolation {
     }
 
     public boolean isFull(int outerRow, int outerCol) {
+        validateOuterCoordinates(outerRow, outerCol);
         return top > -1
                 && isOpen(outerRow, outerCol)
                 && uf.connected(toNode(outerRow - 1, outerCol - 1), top);
     }
 
     public boolean isOpen(int outerRow, int outerCol) {
+        validateOuterCoordinates(outerRow, outerCol);
         return openStatus[outerRow - 1][outerCol - 1];
     }
 
     public int numberOfOpenSites() {
         return numberOfOpen;
+    }
+
+    private static void validateOuterCoordinates(int outerRow, int outerCol) {
+        if (outerCol <= 0 || outerCol <= 0) throw new IllegalArgumentException();
     }
 
     private void connect(int p, int... other) {
