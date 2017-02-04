@@ -61,12 +61,11 @@ public class Percolation {
     }
 
     private void validateOuterCoordinates(int outerRow, int outerCol) {
-        int total = n * n;
         if (outerRow <= 0
                 || outerCol <= 0
                 || outerRow > n
                 || outerCol > n) {
-            throw new IllegalArgumentException();
+            throw new IndexOutOfBoundsException();
         }
     }
 
