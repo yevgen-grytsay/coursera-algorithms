@@ -8,6 +8,7 @@ public class PercolationStats {
     private int n;
     private int trials;
     private double[] x;
+    private Percolation[] percs;
 
     public PercolationStats(int n, int trials) {
         if (n <= 0 || trials <= 0) {
@@ -17,6 +18,11 @@ public class PercolationStats {
         x = new double[trials];
         this.n = n;
         this.trials = trials;
+
+        percs = new Percolation[trials];
+        for (int i = 0; i < trials; i++) {
+            percs[i] = new Percolation(n);
+        }
     }
 
     public static void main(String[] args) {
@@ -33,7 +39,7 @@ public class PercolationStats {
 
     private void runAll() {
         for (int i = 0; i < trials; i++) {
-            run(i);
+            run(i, percs[i]);
         }
     }
 
@@ -62,8 +68,7 @@ public class PercolationStats {
         return xDash + mode * (1.96 * StdStats.stddev(x) / Math.sqrt(trials));
     }
 
-    private void run(final int i) {
-        Percolation p = new Percolation(n);
+    private void run(int i, final Percolation p) {
         int[] nodes = createNodeQueue();
         int ni = 0;
         double lo = -1;
