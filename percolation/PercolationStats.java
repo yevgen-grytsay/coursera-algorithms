@@ -70,7 +70,7 @@ public class PercolationStats {
         int total = n*n;
         while (ni < total) {
             int node = nodes[ni++];
-            p.open(node/n, node % n);
+            p.open(node/n + 1, node % n + 1);
             if (p.percolates()) {
                 lo = (double) p.numberOfOpenSites() / (float) (n * n);
                 break;

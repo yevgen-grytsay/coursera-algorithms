@@ -6,13 +6,13 @@ public class Main {
         Percolation p = new Percolation(2);
         System.out.println(p.percolates());
 
-        p.open(0, 0);
+        p.open(1, 1);
         System.out.println(p.percolates());
 
-        p.open(1, 1);
-        System.out.println(String.format("Percolates: %s, isFull(1, 1): %s", p.percolates(), p.isFull(1, 1)));
+        p.open(2, 2);
+        System.out.println(String.format("Percolates: %s, isFull(1, 1): %s", p.percolates(), p.isFull(2, 2)));
 
-        p.open(0, 1);
-        System.out.println(String.format("Percolates: %s, isFull(1, 1): %s", p.percolates(), p.isFull(1, 1)));
+        p.open(1, 2);
+        System.out.println(String.format("Percolates: %s, isFull(1, 1): %s", p.percolates(), p.isFull(2, 2)));
     }
 }

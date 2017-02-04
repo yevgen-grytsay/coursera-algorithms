@@ -18,8 +18,10 @@ public class Percolation {
         uf = new WeightedQuickUnionUF(n * n);
     }
 
-    public void open(int row, int col) {
-        if (isOpen(row, col)) return;
+    public void open(int outerRow, int outerCol) {
+        int row = outerRow - 1;
+        int col = outerCol - 1;
+        if (isOpen(outerRow, outerCol)) return;
         int tRow = Math.max(row - 1, 0);
         int bRow = Math.min(row + 1, n - 1);
         int lCol = Math.max(col - 1, 0);
@@ -37,24 +39,26 @@ public class Percolation {
                 toNode(bRow, col));
     }
 
+    public boolean isFull(int outerRow, int outerCol) {
+        return top > -1
+                && isOpen(outerRow, outerCol)
+                && uf.connected(toNode(outerRow - 1, outerCol - 1), top);
+    }
+
+    public boolean isOpen(int outerRow, int outerCol) {
+        return openStatus[outerRow - 1][outerCol - 1];
+    }
+
+    public int numberOfOpenSites() {
+        return numberOfOpen;
+    }
+
     private void connect(int p, int... other) {
         for (int q: other) {
             if (isOpen(q)) {
                 uf.union(p, q);
             }
         }
-    }
-
-    public boolean isOpen(int row, int col) {
-        return openStatus[row][col];
-    }
-
-    public boolean isFull(int row, int col) {
-        return top > -1 && isOpen(row, col) && uf.connected(toNode(row, col), top);
-    }
-
-    public int numberOfOpenSites() {
-        return numberOfOpen;
     }
 
     private boolean isOpen(int node) {
