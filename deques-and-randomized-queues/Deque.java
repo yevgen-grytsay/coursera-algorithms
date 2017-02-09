@@ -17,6 +17,9 @@ public class Deque<Item> implements Iterable<Item> {
         Node newNode = new Node();
         newNode.item = item;
         newNode.next = head;
+        if (head != null) {
+            head.prev = newNode;
+        }
         head = newNode;
         if (tail == null) {
             tail = newNode;
@@ -78,9 +81,9 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
     private class Node {
-        Item item;
-        Node next;
-        Node prev;
+        private Item item;
+        private Node next;
+        private Node prev;
     }
 
     private class DequeIterator implements Iterator<Item> {
@@ -92,7 +95,7 @@ public class Deque<Item> implements Iterable<Item> {
 
         @Override
         public boolean hasNext() {
-            return first !=null;
+            return first != null;
         }
 
         @Override

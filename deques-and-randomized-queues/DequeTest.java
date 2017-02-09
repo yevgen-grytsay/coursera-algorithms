@@ -74,6 +74,66 @@ public class DequeTest {
         d.addLast(null);
     }
 
+    @Test
+    public void addFirstRemoveFirstShouldBeEmpty() {
+        Deque<String> d = new Deque<>();
+        d.addFirst("one");
+        d.addFirst("two");
+        assertFalse(d.isEmpty());
+
+        d.removeFirst();
+        d.removeFirst();
+        assertTrue(d.isEmpty());
+    }
+
+    @Test
+    public void addFirstRemoveLastShouldBeEmpty() {
+        Deque<String> d = new Deque<>();
+        d.addFirst("one");
+        d.addFirst("two");
+        assertFalse(d.isEmpty());
+
+        d.removeLast();
+        d.removeLast();
+        assertTrue(d.isEmpty());
+    }
+
+    @Test
+    public void addLastRemoveFirstShouldBeEmpty() {
+        Deque<String> d = new Deque<>();
+        d.addLast("one");
+        d.addLast("two");
+        assertFalse(d.isEmpty());
+
+        d.removeFirst();
+        d.removeFirst();
+        assertTrue(d.isEmpty());
+    }
+
+    @Test
+    public void addLastRemoveLastShouldBeEmpty() {
+        Deque<String> d = new Deque<>();
+        d.addLast("one");
+        d.addLast("two");
+        assertFalse(d.isEmpty());
+
+        d.removeLast();
+        d.removeLast();
+        assertTrue(d.isEmpty());
+    }
+
+    @Test
+    public void lifoShouldBeEmpty() {
+        Deque<String> d = new Deque<>();
+        d.addLast("one");
+        d.addLast("two");
+        assertFalse(d.isEmpty());
+
+        d.removeFirst();
+        d.removeFirst();
+        assertTrue(d.isEmpty());
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void failRemoveFromIterator() {
         Deque<String> d = new Deque<>();
