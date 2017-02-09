@@ -79,4 +79,10 @@ public class DequeTest {
         Deque<String> d = new Deque<>();
         d.iterator().remove();
     }
+
+    @Test(expected = NoSuchElementException.class)
+    public void failNextOnEmptyIterator() {
+        Deque<String> d = new Deque<>();
+        d.iterator().next();
+    }
 }
