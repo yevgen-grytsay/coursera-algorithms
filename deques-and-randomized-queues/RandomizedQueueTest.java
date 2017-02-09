@@ -2,6 +2,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
@@ -62,5 +63,18 @@ public class RandomizedQueueTest {
     @Test(expected = NoSuchElementException.class)
     public void failNextOnEmptyIterator() {
         q.iterator().next();
+    }
+
+    @Test
+    public void iterator() {
+        q.enqueue("one");
+        q.enqueue("two");
+        Iterator<String> it = q.iterator();
+        assertTrue(it.hasNext());
+
+        String[] actual = {it.next(), it.next()};
+        assertFalse(it.hasNext());
+        Arrays.sort(actual);
+        assertArrayEquals(new String[]{"one", "two"}, actual);
     }
 }

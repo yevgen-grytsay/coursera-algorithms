@@ -23,7 +23,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public void enqueue(Item item) {
         if (item == null) throw new NullPointerException();
-        if (n >= queue.length) resize(2 * queue.length);
+        if (n == queue.length) resize(2 * queue.length);
         queue[n++] = item;
     }
 
@@ -44,7 +44,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
         queue[n - 1] = null;
         --n;
-        if (n > 0 && queue.length / n >= 4) resize(queue.length / 2);
+        if (n > 0 && queue.length / 4 == n) resize(queue.length / 2);
         return item;
     }
 
@@ -59,15 +59,25 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomizedQueueIterator implements Iterator<Item> {
+        private int[] indexes = new int[n];
+        private int current = 0;
+
+        public RandomizedQueueIterator() {
+            for (int i = 0; i < n; i++) {
+                indexes[i] = i;
+            }
+            StdRandom.shuffle(indexes);
+        }
 
         @Override
         public boolean hasNext() {
-            return size() > 0;
+            return current < n;
         }
 
         @Override
         public Item next() {
-            return sample();
+            if (n == 0) throw new NoSuchElementException();
+            return queue[current++];
         }
 
         @Override
