@@ -15,6 +15,7 @@ public class FastCollinearPoints {
     private LinkedList<LineSegment> segments = new LinkedList<>();
 
     public FastCollinearPoints(Point[] points) {
+        validate(points);
         Point[] search = Arrays.copyOf(points, points.length);
         Arrays.sort(search);
         for (int i = 0; i < points.length; i++) {
@@ -63,7 +64,7 @@ public class FastCollinearPoints {
 
     public static void main(String[] args) {
 //        fromFile(args[0]);
-        fromFile("/home/yevgen/IdeaProjects/coursera-algorithms/w3-collinear-points/example.txt");
+        fromFile("/home/yevgen/IdeaProjects/coursera-algorithms/w3-collinear-points/collinear/rs1423.txt");
 
         // print and draw the line segments
 //        FastCollinearPoints collinear = new FastCollinearPoints(fromStdIn());
@@ -71,6 +72,23 @@ public class FastCollinearPoints {
 //            StdOut.println(segment);
 //            segment.draw();
 //        }
+    }
+
+    private void validate(Point[] points) {
+        if (points == null) {
+            throw new NullPointerException();
+        }
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new NullPointerException();
+            }
+        }
+        Arrays.sort(points);
+        for (int i = 0; i < points.length - 1; i++) {
+            if (points[i].compareTo(points[i + 1]) == 0) {
+                throw new IllegalArgumentException();
+            }
+        }
     }
 
     private static Point[] fromStdIn() {

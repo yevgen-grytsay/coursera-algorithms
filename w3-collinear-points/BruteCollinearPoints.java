@@ -13,6 +13,8 @@ public class BruteCollinearPoints {
     private LineSegment[] collinear;
 
     public BruteCollinearPoints(Point[] points) {
+        validate(points);
+
         ArrayList<LineSegment> segments = new ArrayList<>();
         for (int p = 0; p < points.length; p++) {
             for (int q = 0; q < points.length; q++) {
@@ -34,6 +36,23 @@ public class BruteCollinearPoints {
             }
         }
         collinear = segments.toArray(new LineSegment[segments.size()]);
+    }
+
+    private void validate(Point[] points) {
+        if (points == null) {
+            throw new NullPointerException();
+        }
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new NullPointerException();
+            }
+        }
+        Arrays.sort(points);
+        for (int i = 0; i < points.length - 1; i++) {
+            if (points[i].compareTo(points[i + 1]) == 0) {
+                throw new IllegalArgumentException();
+            }
+        }
     }
 
     private static boolean lesse(Point a, Point b) {
