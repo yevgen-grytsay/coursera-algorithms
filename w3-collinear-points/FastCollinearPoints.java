@@ -19,6 +19,7 @@ public class FastCollinearPoints {
         Point[] search = Arrays.copyOf(points, points.length);
         for (int i = 0; i < points.length; i++) {
             Point p = points[i];
+            Arrays.sort(search);
             Arrays.sort(search, p.slopeOrder());
             find(search, p);
         }
@@ -31,14 +32,13 @@ public class FastCollinearPoints {
 
         for (int i = 0; i < points.length;) {
             Point p = points[i];
-            Point prev = i > 0 ? points[i - 1] : origin;
-            boolean inOrder = isInOrder(prev, p);
+            boolean inOrder = isInOrder(origin, p);
             if (!inOrder) {
                 ++i;
                 continue;
             }
             int j = i + 1;
-            n = 0;
+            n = 1;
             slope = origin.slopeTo(p);
             last = null;
             for (; j < points.length; j++) {
