@@ -59,9 +59,9 @@ public class Point implements Comparable<Point> {
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) {
-        if (y == that.y) return Double.POSITIVE_INFINITY;
-        else if (x == that.x) return 0;
-        else if (equals(that)) return Double.NEGATIVE_INFINITY;
+        if (x == that.x && y == that.y) return Double.NEGATIVE_INFINITY;
+        else if (y == that.y) return +0.0;
+        else if (x == that.x) return Double.POSITIVE_INFINITY;
         return (double) (that.y - y) / (double) (that.x - x);
     }
 
@@ -79,7 +79,7 @@ public class Point implements Comparable<Point> {
      */
     public int compareTo(Point that) {
         if (x == that.x && y == that.y) return 0;
-        if (y < that.y || (y == that.y) && x < that.x) return -1;
+        if (y < that.y || (y == that.y && x < that.x)) return -1;
         return 1;
     }
 
@@ -103,11 +103,6 @@ public class Point implements Comparable<Point> {
     public String toString() {
         /* DO NOT MODIFY */
         return "(" + x + ", " + y + ")";
-    }
-
-    private boolean equals(Point obj) {
-        if (obj == this) return true;
-        return obj != null && x == obj.x && y == obj.y;
     }
 
     /**
@@ -194,9 +189,7 @@ public class Point implements Comparable<Point> {
         public int compare(Point o1, Point o2) {
             double slope1 = slopeTo(o1);
             double slope2 = slopeTo(o2);
-            if (slope1 < slope2) return -1;
-            if (slope1 > slope2) return 1;
-            return 0;
+            return Double.compare(slope1, slope2);
         }
     }
 }
