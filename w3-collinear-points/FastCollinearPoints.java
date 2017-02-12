@@ -36,18 +36,12 @@ public class FastCollinearPoints {
                 j++;
             }
             if (j - i >= 3 && isInOrder(origin, p)) {
-                flush(origin, points[j - 1]);
+                segments.add(new LineSegment(origin, points[j - 1]));
             }
             i = j;
         }
 
         return 0;
-    }
-
-    private void flush(Point origin, Point b) {
-        if (b != null) {
-            segments.add(new LineSegment(origin, b));
-        }
     }
 
     private static boolean isInOrder(Point a, Point b) {
