@@ -1,4 +1,4 @@
-import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.io.File;
@@ -13,36 +13,31 @@ public class BruteCollinearPoints {
     private LineSegment[] collinear;
 
     public BruteCollinearPoints(Point[] points) {
-        int[] idx = new int[4];
         ArrayList<LineSegment> segments = new ArrayList<>();
-        do {
-            if (!(idx[0] < idx[1] && idx[1] < idx[2] && idx[2] < idx[3])) {
-                continue;
+        for (int p = 0; p < points.length; p++) {
+            for (int q = 0; q < points.length; q++) {
+                if (lesse(points[p], points[q])) continue;
+                for (int r = 0; r < points.length; r++) {
+                    if (lesse(points[q], points[r])) continue;
+                    for (int s = 0; s < points.length; s++) {
+                        if (lesse(points[r], points[s])) continue;
+                        Point a = points[p];
+                        Point b = points[q];
+                        Point c = points[r];
+                        Point d = points[s];
+                        double ab = a.slopeTo(b);
+                        if (Double.compare(ab, a.slopeTo(c)) == 0 && Double.compare(ab, a.slopeTo(d)) == 0) {
+                            segments.add(new LineSegment(a, d));
+                        }
+                    }
+                }
             }
-            Point a = points[idx[0]];
-            Point b = points[idx[1]];
-            Point c = points[idx[2]];
-            Point d = points[idx[3]];
-            double ab = a.slopeTo(b);
-            if (Double.compare(ab, a.slopeTo(c)) == 0 && Double.compare(ab, a.slopeTo(d)) == 0) {
-                segments.add(new LineSegment(a, d));
-            }
-
-        } while(advance(idx, 4));
+        }
         collinear = segments.toArray(new LineSegment[segments.size()]);
     }
 
-    private static boolean advance(int[] idx, int max) {
-        for (int i = idx.length - 1; i >= 0; i--) {
-            ++idx[i];
-            if (idx[i] > max) {
-                idx[i] = 0;
-                if (i == 0) return false;
-            } else {
-                return true;
-            }
-        }
-        return true;
+    private static boolean lesse(Point a, Point b) {
+        return a.compareTo(b) <= 0;
     }
 
     public int numberOfSegments() {
@@ -58,35 +53,38 @@ public class BruteCollinearPoints {
 //        while(advance(idx, 3)) {
 //            StdOut.println(Arrays.toString(idx));
 //        }
-//        int n = StdIn.readInt();
-//        Point[] points = new Point[n];
-//        for (int i = 0; i < n; i++) {
-//            points[i] = new Point(StdIn.readInt(), StdIn.readInt());
-//        }
 
-        String pathname = "/home/yevgen/IdeaProjects/coursera-algorithms/w3-collinear-points/collinear/input6.txt";
-        File file = new File(pathname);
+
+        String pathname = "/home/yevgen/IdeaProjects/coursera-algorithms/w3-collinear-points/collinear/input40.txt";
+        Point[] points = fromStdIn();
+//        Point[] points = fromFile(pathname);
+
+        BruteCollinearPoints bcp = new BruteCollinearPoints(points);
+        StdOut.println(Arrays.toString(bcp.segments()));
+    }
+
+    private static Point[] fromStdIn() {
+        int n = StdIn.readInt();
+        Point[] points = new Point[n];
+        for (int i = 0; i < n; i++) {
+            points[i] = new Point(StdIn.readInt(), StdIn.readInt());
+        }
+        return points;
+    }
+
+    private static Point[] fromFile(String filename) throws FileNotFoundException {
+        File file = new File(filename);
         FileInputStream f = new FileInputStream(file);
         Scanner s = new Scanner(f);
         int n = s.nextInt();
         Point[] points = new Point[n];
         int i = 0;
-        Point prev = null;
-        StdDraw.setPenRadius(100);
-        StdDraw.setPenColor(java.awt.Color.BLACK);
-//        new Point(1, 1).draw();
+//        StdDraw.setPenRadius(100);
+//        StdDraw.setPenColor(java.awt.Color.BLACK);
         while(s.hasNextInt()) {
             Point p = new Point(s.nextInt(), s.nextInt());
-            if (prev != null) {
-                prev.drawTo(p);
-            }
-            points[i++] = prev = p;
+            points[i++] = p;
         }
-//        StdDraw.save(file.getName().concat(".png"));
-//        StdDraw.show();
-
-        BruteCollinearPoints bcp = new BruteCollinearPoints(points);
-        StdOut.println(Arrays.toString(bcp.segments()));
-
+        return points;
     }
 }
