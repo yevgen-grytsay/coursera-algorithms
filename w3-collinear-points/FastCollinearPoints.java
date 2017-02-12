@@ -15,78 +15,31 @@ public class FastCollinearPoints {
     private LinkedList<LineSegment> segments = new LinkedList<>();
 
     public FastCollinearPoints(Point[] points) {
-        Arrays.sort(points);
         Point[] search = Arrays.copyOf(points, points.length);
+        Arrays.sort(search);
         for (int i = 0; i < points.length; i++) {
             Point p = points[i];
             Arrays.sort(search);
             Arrays.sort(search, p.slopeOrder());
-            find(search, p);
+            find(search);
         }
     }
 
-    private int find(Point[] points, Point origin) {
-        double slope = 0;
-        int n = 0;
-        Point last = null;
-
-        for (int i = 0; i < points.length;) {
+    private int find(Point[] points) {
+        Point origin = points[0];
+        for (int i = 1; i < points.length;) {
             Point p = points[i];
-            boolean inOrder = isInOrder(origin, p);
-            if (!inOrder) {
-                ++i;
-                continue;
-            }
             int j = i + 1;
-            n = 1;
-            slope = origin.slopeTo(p);
-            last = null;
-            for (; j < points.length; j++) {
-                if (Double.compare(slope, origin.slopeTo(points[j])) != 0
-                        || !isInOrder(points[j - 1], points[j])) {
-                    break;
-                }
-                ++n;
-                if (n >= 3) {
-                    last = points[j];
-                }
+            double slope = origin.slopeTo(p);
+            while (j < points.length && Double.compare(slope, origin.slopeTo(points[j])) == 0) {
+                j++;
             }
-            flush(origin, last);
+            if (j - i >= 3 && isInOrder(origin, p)) {
+                flush(origin, points[j - 1]);
+            }
             i = j;
         }
 
-//        for (int i = 0; i < points.length; i++) {
-//            Point p = points[i];
-//            Point prev = i > 0 ? points[i - 1] : origin;
-//            boolean inOrder = isInOrder(prev, p);
-//            if (n == 0 && !inOrder) {
-//                continue;
-//            }
-//            if (n == 0) {
-//                slope = origin.slopeTo(p);
-//                n = 1;
-//                continue;
-//            }
-//            boolean equals = Double.compare(slope, origin.slopeTo(p)) == 0;
-//            if (equals && !inOrder) {
-//                n = 0;
-//                last = null;
-//                continue;
-//            }
-//            if (equals && inOrder) {
-//                ++n;
-//            }
-//            if (n >= 3 && equals && inOrder) {
-//                last = p;
-//            }
-//
-//            if (!equals || !inOrder || i == points.length - 1) {
-//                flush(origin, last);
-//                last = null;
-//                n = 0;
-//            }
-//        }
-//        flush(origin, last);
         return 0;
     }
 
