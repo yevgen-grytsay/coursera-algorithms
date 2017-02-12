@@ -55,12 +55,13 @@ public class BruteCollinearPoints {
 //        }
 
 
-        String pathname = "/home/yevgen/IdeaProjects/coursera-algorithms/w3-collinear-points/collinear/input40.txt";
-        Point[] points = fromStdIn();
-//        Point[] points = fromFile(pathname);
+//        String pathname = "/home/yevgen/IdeaProjects/coursera-algorithms/w3-collinear-points/collinear/input40.txt";
+//        Point[] points = fromStdIn();
+////        Point[] points = fromFile(pathname);
+//
+//        BruteCollinearPoints bcp = new BruteCollinearPoints(points);
+//        StdOut.println(Arrays.toString(bcp.segments()));
 
-        BruteCollinearPoints bcp = new BruteCollinearPoints(points);
-        StdOut.println(Arrays.toString(bcp.segments()));
     }
 
     private static Point[] fromStdIn() {
