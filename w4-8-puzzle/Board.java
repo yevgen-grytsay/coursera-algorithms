@@ -79,6 +79,21 @@ public class Board {
         return sb.toString();
     }
 
+    public Board twin() {
+        int[][] twinBlocks = copy(blocks);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n - 1; j++) {
+                if (twinBlocks[i][j] > 0 && twinBlocks[i][j + 1] > 0) {
+                    int temp = twinBlocks[i][j];
+                    twinBlocks[i][j] = twinBlocks[i][j + 1];
+                    twinBlocks[i][j + 1] = temp;
+                    break;
+                }
+            }
+        }
+        return new Board(twinBlocks);
+    }
+
     private int row(int index) {
         return index / n;
     }
@@ -122,7 +137,7 @@ public class Board {
 
         @Override
         public boolean hasNext() {
-            return i <= nb.length;
+            return i < nb.length;
         }
 
         @Override
@@ -136,13 +151,13 @@ public class Board {
 
             return new Board(neighbor);
         }
+    }
 
-        private int[][] copy(int[][] input) {
-            int[][] target = new int[input.length][];
-            for (int i=0; i <input.length; i++) {
-                target[i] = Arrays.copyOf(input[i], input[i].length);
-            }
-            return target;
+    private static int[][] copy(int[][] input) {
+        int[][] target = new int[input.length][];
+        for (int i=0; i <input.length; i++) {
+            target[i] = Arrays.copyOf(input[i], input[i].length);
         }
+        return target;
     }
 }
