@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.StringJoiner;
 
 /**
  * Created by yevgen on 22.02.17.
@@ -58,6 +59,24 @@ public class Board {
                 return new NeighbourIterator();
             }
         };
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(n).append("\n");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                String number = String.valueOf(blocks[i][j]);
+                sb.append(number);
+                if (j < n - 1) {
+                    sb.append("  ");
+                }
+            }
+            if (i < n - 1) {
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
     private int row(int index) {

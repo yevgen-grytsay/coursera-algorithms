@@ -92,4 +92,14 @@ public class BoardTest {
         });
         assertTrue(it.next().equals(nn));
     }
+
+    @Test
+    public void testToString() {
+        Board b = new Board(new int[][] {
+                {1, 2},
+                {3, 0}
+        });
+        String expected = "2\n1  2\n3  0";
+        assertEquals(expected, b.toString());
+    }
 }
