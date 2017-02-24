@@ -1,6 +1,6 @@
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.StringJoiner;
+import java.util.NoSuchElementException;
 
 /**
  * Created by yevgen on 22.02.17.
@@ -10,7 +10,7 @@ public class Board {
     private final int n;
 
     public Board(int[][] blocks) {
-        this.blocks = blocks;
+        this.blocks = copy(blocks);
         n = blocks.length;
     }
 
@@ -49,7 +49,9 @@ public class Board {
     }
 
     public boolean equals(Object y) {
-        return Arrays.deepEquals(blocks, ((Board)y).blocks);
+        if (y == null) return false;
+        if (!(y instanceof  Board)) return false;
+        return Arrays.deepEquals(blocks, ((Board) y).blocks);
     }
 
     public Iterable<Board> neighbors() {
@@ -87,11 +89,15 @@ public class Board {
                     int temp = twinBlocks[i][j];
                     twinBlocks[i][j] = twinBlocks[i][j + 1];
                     twinBlocks[i][j + 1] = temp;
-                    break;
+                    return new Board(twinBlocks);
                 }
             }
         }
         return new Board(twinBlocks);
+    }
+
+    public boolean isGoal() {
+        return hamming() == 0;
     }
 
     private int row(int index) {
@@ -105,7 +111,7 @@ public class Board {
     private class NeighbourIterator implements Iterator<Board> {
         private int spaceRow;
         private int spaceCol;
-        private int i;
+        private int idx;
         private int[][] nb;
 
         public NeighbourIterator() {
@@ -137,17 +143,20 @@ public class Board {
 
         @Override
         public boolean hasNext() {
-            return i < nb.length;
+            return idx < nb.length;
         }
 
         @Override
         public Board next() {
-            int row = nb[i][0];
-            int col = nb[i][1];
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            int row = nb[idx][0];
+            int col = nb[idx][1];
             int[][] neighbor = copy(blocks);
             neighbor[spaceRow][spaceCol] = neighbor[row][col];
             neighbor[row][col] = 0;
-            ++i;
+            ++idx;
 
             return new Board(neighbor);
         }
@@ -155,7 +164,7 @@ public class Board {
 
     private static int[][] copy(int[][] input) {
         int[][] target = new int[input.length][];
-        for (int i=0; i <input.length; i++) {
+        for (int i = 0; i < input.length; i++) {
             target[i] = Arrays.copyOf(input[i], input[i].length);
         }
         return target;

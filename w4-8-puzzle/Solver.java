@@ -8,30 +8,68 @@ import java.util.LinkedList;
 
 
 public class Solver {
+    private boolean solvable = false;
     private int moves = -1;
     private LinkedList<Board> solution = null;
 
+//    public Solver(Board initial) {
+//        MinPQ<Board> pq = new MinPQ<>(new BoardComparator());
+//        Board prev = null;
+//        pq.insert(initial);
+//        solution = new LinkedList<>();
+//        Board min;
+//        do {
+//            min = pq.delMin();
+//            solution.add(min);
+//            for (Board nb: min.neighbors()) {
+//                if (prev != null && nb.equals(prev)) continue;
+//                pq.insert(nb);
+//            }
+//            prev = min;
+//            ++moves;
+//        } while (min.manhattan() > 0);
+//    }
+
     public Solver(Board initial) {
+        if (initial == null) {
+            throw new NullPointerException();
+        }
         MinPQ<Board> pq = new MinPQ<>(new BoardComparator());
+        MinPQ<Board> twinPq = new MinPQ<>(new BoardComparator());
         Board prev = null;
+        Board twinPrev = null;
+
         pq.insert(initial);
-        solution = new LinkedList<>();
-        Board min;
+        twinPq.insert(initial.twin());
+        LinkedList<Board> sol = new LinkedList<>();
+
         do {
-            min = pq.delMin();
-            solution.add(min);
-            for (Board nb: min.neighbors()) {
-                if (prev != null && nb.equals(prev)) continue;
-                pq.insert(nb);
-            }
-            prev = min;
+            prev = step(pq, prev);
+            twinPrev = step(twinPq, twinPrev);
+            sol.add(prev);
             ++moves;
-        } while (min.manhattan() > 0);
+        } while (prev.manhattan() > 0 && twinPrev.manhattan() > 0);
+        if (prev.manhattan() == 0) {
+            solution = sol;
+            solvable = true;
+        } else {
+            moves = -1;
+        }
     }
 
-    public Board[] solution() {
-        return solution.toArray(new Board[solution.size()]);
+    private Board step(MinPQ<Board> pq, Board prev) {
+        Board min = pq.delMin();
+        for (Board nb: min.neighbors()) {
+            if (prev != null && nb.equals(prev)) continue;
+            pq.insert(nb);
+        }
+        return min;
     }
+
+    public Iterable<Board> solution() {
+        return solution;
+    }
+
 
     public int moves() {
         return moves;
@@ -45,15 +83,15 @@ public class Solver {
         }
     }
 
-    private boolean isSolvable() {
-        return true;
+    public boolean isSolvable() {
+        return solvable;
     }
 
     public static void main(String[] args) {
 
         // create initial board from file
-        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt"));
-//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt"));
+//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt"));
+        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt"));
         int n = in.readInt();
         int[][] blocks = new int[n][n];
         for (int i = 0; i < n; i++)
