@@ -9,9 +9,28 @@ import java.util.LinkedList;
 
 public class Solver {
     private boolean solvable = false;
-    private int moves = -1;
+    private int moves = 0;
     private LinkedList<Board> solution = null;
 
+    private class SearchNode {
+        private final Board board;
+        private final int moves;
+        private final SearchNode prev;
+        private int priority = -1;
+
+        public SearchNode(Board board, int moves, SearchNode prev) {
+            this.board = board;
+            this.moves = moves;
+            this.prev = prev;
+        }
+
+        public int priority() {
+            if (priority == -1) {
+                priority = board.manhattan() + moves;
+            }
+            return priority;
+        }
+    }
 //    public Solver(Board initial) {
 //        MinPQ<Board> pq = new MinPQ<>(new BoardComparator());
 //        Board prev = null;
@@ -34,34 +53,38 @@ public class Solver {
         if (initial == null) {
             throw new NullPointerException();
         }
-        MinPQ<Board> pq = new MinPQ<>(new BoardComparator());
-        MinPQ<Board> twinPq = new MinPQ<>(new BoardComparator());
-        Board prev = null;
-        Board twinPrev = null;
+        MinPQ<SearchNode> pq = new MinPQ<>(new BoardComparator());
+        MinPQ<SearchNode> twinPq = new MinPQ<>(new BoardComparator());
+        SearchNode node = null;
+        SearchNode twinNode = null;
 
-        pq.insert(initial);
-        twinPq.insert(initial.twin());
-        LinkedList<Board> sol = new LinkedList<>();
+        pq.insert(new SearchNode(initial, moves, null));
+        twinPq.insert(new SearchNode(initial.twin(), moves, null));
 
         do {
-            prev = step(pq, prev);
-            twinPrev = step(twinPq, twinPrev);
-            sol.add(prev);
+            node = step(pq, node);
+            twinNode = step(twinPq, twinNode);
             ++moves;
-        } while (prev.manhattan() > 0 && twinPrev.manhattan() > 0);
-        if (prev.manhattan() == 0) {
-            solution = sol;
+        } while (!node.board.isGoal() && !twinNode.board.isGoal());
+        if (node.board.isGoal()) {
+            solution = new LinkedList<>();
+            solution.add(0, node.board);
+            while (node.prev != null) {
+                solution.add(0, node.prev.board);
+                node = node.prev;
+            }
+
             solvable = true;
         } else {
             moves = -1;
         }
     }
 
-    private Board step(MinPQ<Board> pq, Board prev) {
-        Board min = pq.delMin();
-        for (Board nb: min.neighbors()) {
-            if (prev != null && nb.equals(prev)) continue;
-            pq.insert(nb);
+    private SearchNode step(MinPQ<SearchNode> pq, SearchNode prev) {
+        SearchNode min = pq.delMin();
+        for (Board nb: min.board.neighbors()) {
+            if (prev != null && nb.equals(prev.board)) continue;
+            pq.insert(new SearchNode(nb, moves, min));
         }
         return min;
     }
@@ -72,14 +95,14 @@ public class Solver {
 
 
     public int moves() {
-        return moves;
+        return solution != null ? solution.size() - 1 : moves;
     }
 
-    private class BoardComparator implements Comparator<Board> {
+    private class BoardComparator implements Comparator<SearchNode> {
 
         @Override
-        public int compare(Board o1, Board o2) {
-            return Integer.compare(o1.manhattan() + moves, o2.manhattan() + moves);
+        public int compare(SearchNode o1, SearchNode o2) {
+            return Integer.compare(o1.priority(), o2.priority());
         }
     }
 
@@ -90,8 +113,9 @@ public class Solver {
     public static void main(String[] args) {
 
         // create initial board from file
-//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt"));
-        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt"));
+        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt");
+//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt"));
+//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/8puzzle/puzzle07.txt"));
         int n = in.readInt();
         int[][] blocks = new int[n][n];
         for (int i = 0; i < n; i++)
