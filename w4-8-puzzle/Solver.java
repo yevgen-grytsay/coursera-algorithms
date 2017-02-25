@@ -9,26 +9,8 @@ import java.util.LinkedList;
 
 public class Solver {
     private boolean solvable = false;
-    private int moves = -1;
+    private int moves = 0;
     private LinkedList<Board> solution = null;
-
-//    public Solver(Board initial) {
-//        MinPQ<Board> pq = new MinPQ<>(new BoardComparator());
-//        Board prev = null;
-//        pq.insert(initial);
-//        solution = new LinkedList<>();
-//        Board min;
-//        do {
-//            min = pq.delMin();
-//            solution.add(min);
-//            for (Board nb: min.neighbors()) {
-//                if (prev != null && nb.equals(prev)) continue;
-//                pq.insert(nb);
-//            }
-//            prev = min;
-//            ++moves;
-//        } while (min.manhattan() > 0);
-//    }
 
     public Solver(Board initial) {
         if (initial == null) {
@@ -90,8 +72,8 @@ public class Solver {
     public static void main(String[] args) {
 
         // create initial board from file
-//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt"));
-        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt"));
+        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt"));
+//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt"));
         int n = in.readInt();
         int[][] blocks = new int[n][n];
         for (int i = 0; i < n; i++)

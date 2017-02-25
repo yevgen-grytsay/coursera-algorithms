@@ -102,4 +102,22 @@ public class BoardTest {
         String expected = "2\n1  2\n3  0";
         assertEquals(expected, b.toString());
     }
+
+    @Test
+    public void testIsNotGoal() {
+        Board b = new Board(new int[][] {
+                {3, 2},
+                {1, 0}
+        });
+        assertFalse(b.isGoal());
+    }
+
+    @Test
+    public void testIsGoal() {
+        Board b = new Board(new int[][] {
+                {1, 2},
+                {3, 0}
+        });
+        assertTrue(b.isGoal());
+    }
 }

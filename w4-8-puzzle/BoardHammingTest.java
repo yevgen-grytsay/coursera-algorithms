@@ -36,9 +36,9 @@ public class BoardHammingTest {
     @Test
     public void testAllNotInPlace() {
         Board b = new Board(new int[][] {
-                {2, 1},
-                {4, 0},
+                {0, 1},
+                {4, 2},
         });
-        assertEquals(3, b.hamming());
+        assertEquals(4, b.hamming());
     }
 }

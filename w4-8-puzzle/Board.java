@@ -22,11 +22,7 @@ public class Board {
         int distance = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                int index = blocks[i][j] - 1;
-                if (index == -1) continue;
-                int row = row(index);
-                int col = col(index);
-                if (i != row || j != col) {
+                if (distance(i, j) > 0) {
                     ++distance;
                 }
             }
@@ -38,20 +34,20 @@ public class Board {
         int distance = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                int index = blocks[i][j] - 1;
-                if (index == -1) continue;
-                int row = row(index);
-                int col = col(index);
-                distance += Math.abs(i - row) + Math.abs(j - col);
+                distance += distance(i, j);
             }
         }
         return distance;
     }
 
     public boolean equals(Object y) {
+        if (y == this) return true;
         if (y == null) return false;
         if (!(y instanceof  Board)) return false;
-        return Arrays.deepEquals(blocks, ((Board) y).blocks);
+
+        Board other = (Board) y;
+        if (other.n != n) return false;
+        return Arrays.deepEquals(blocks, other.blocks);
     }
 
     public Iterable<Board> neighbors() {
@@ -97,7 +93,12 @@ public class Board {
     }
 
     public boolean isGoal() {
-        return hamming() == 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (distance(i, j) > 0) return false;
+            }
+        }
+        return true;
     }
 
     private int row(int index) {
@@ -106,6 +107,18 @@ public class Board {
 
     private int col(int index) {
         return index % n;
+    }
+
+    private int distance(int i, int j) {
+        int block = blocks[i][j];
+        int row, col;
+        if (block == 0) {
+            row = col = n - 1;
+        } else {
+            row = row(block - 1);
+            col = col(block - 1);
+        }
+        return Math.abs(i - row) + Math.abs(j - col);
     }
 
     private class NeighbourIterator implements Iterator<Board> {
