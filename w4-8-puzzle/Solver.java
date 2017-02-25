@@ -2,7 +2,6 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.StdOut;
 
-import java.io.File;
 import java.util.Comparator;
 import java.util.LinkedList;
 
