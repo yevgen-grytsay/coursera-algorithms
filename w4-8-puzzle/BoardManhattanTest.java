@@ -10,7 +10,7 @@ public class BoardManhattanTest {
     public void testAllInPlace() {
         Board b = new Board(new int[][] {
                 {1, 2},
-                {3, 4},
+                {3, 0},
         });
         assertEquals(0, b.manhattan());
     }
@@ -19,7 +19,7 @@ public class BoardManhattanTest {
     public void testVerticalManhattan() {
         Board b = new Board(new int[][] {
                 {3, 2},
-                {1, 4},
+                {1, 0},
         });
         assertEquals(2, b.manhattan());
     }
@@ -28,7 +28,7 @@ public class BoardManhattanTest {
     public void testHorizontalManhattan() {
         Board b = new Board(new int[][] {
                 {2, 1},
-                {3, 4},
+                {3, 0},
         });
         assertEquals(2, b.manhattan());
     }
@@ -37,7 +37,7 @@ public class BoardManhattanTest {
     public void testAllNotInPlaceManhattan() {
         Board b = new Board(new int[][] {
                 {3, 1},
-                {4, 2},
+                {0, 2},
         });
         assertEquals(4, b.manhattan());
     }
