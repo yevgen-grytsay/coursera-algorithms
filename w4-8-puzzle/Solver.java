@@ -30,23 +30,6 @@ public class Solver {
             return priority;
         }
     }
-//    public Solver(Board initial) {
-//        MinPQ<Board> pq = new MinPQ<>(new BoardComparator());
-//        Board prev = null;
-//        pq.insert(initial);
-//        solution = new LinkedList<>();
-//        Board min;
-//        do {
-//            min = pq.delMin();
-//            solution.add(min);
-//            for (Board nb: min.neighbors()) {
-//                if (prev != null && nb.equals(prev)) continue;
-//                pq.insert(nb);
-//            }
-//            prev = min;
-//            ++moves;
-//        } while (min.manhattan() > 0);
-//    }
 
     public Solver(Board initial) {
         if (initial == null) {
@@ -54,8 +37,8 @@ public class Solver {
         }
         MinPQ<SearchNode> pq = new MinPQ<>(new BoardComparator());
         MinPQ<SearchNode> twinPq = new MinPQ<>(new BoardComparator());
-        SearchNode node = null;
-        SearchNode twinNode = null;
+        SearchNode node;
+        SearchNode twinNode;
 
         pq.insert(new SearchNode(initial, moves, null));
         twinPq.insert(new SearchNode(initial.twin(), moves, null));
@@ -80,12 +63,12 @@ public class Solver {
     }
 
     private SearchNode step(MinPQ<SearchNode> pq) {
-        SearchNode min = pq.delMin();
-        for (Board nb: min.board.neighbors()) {
-            if (min.prev != null && nb.equals(min.prev.board)) continue;
-            pq.insert(new SearchNode(nb, moves, min));
+        SearchNode node = pq.delMin();
+        for (Board nb: node.board.neighbors()) {
+            if (node.prev != null && nb.equals(node.prev.board)) continue;
+            pq.insert(new SearchNode(nb, node.moves + 1, node));
         }
-        return min;
+        return node;
     }
 
     public Iterable<Board> solution() {
@@ -112,9 +95,9 @@ public class Solver {
     public static void main(String[] args) {
 
         // create initial board from file
-//        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt");
+        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt");
 //        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt");
-        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/8puzzle/puzzle07.txt");
+//        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/8puzzle/puzzle07.txt");
         int n = in.readInt();
         int[][] blocks = new int[n][n];
         for (int i = 0; i < n; i++)
