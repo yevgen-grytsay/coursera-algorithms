@@ -61,8 +61,8 @@ public class Solver {
         twinPq.insert(new SearchNode(initial.twin(), moves, null));
 
         do {
-            node = step(pq, node);
-            twinNode = step(twinPq, twinNode);
+            node = step(pq);
+            twinNode = step(twinPq);
             ++moves;
         } while (!node.board.isGoal() && !twinNode.board.isGoal());
         if (node.board.isGoal()) {
@@ -79,10 +79,10 @@ public class Solver {
         }
     }
 
-    private SearchNode step(MinPQ<SearchNode> pq, SearchNode prev) {
+    private SearchNode step(MinPQ<SearchNode> pq) {
         SearchNode min = pq.delMin();
         for (Board nb: min.board.neighbors()) {
-            if (prev != null && nb.equals(prev.board)) continue;
+            if (min.prev != null && nb.equals(min.prev.board)) continue;
             pq.insert(new SearchNode(nb, moves, min));
         }
         return min;
@@ -112,9 +112,9 @@ public class Solver {
     public static void main(String[] args) {
 
         // create initial board from file
-        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt");
-//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt"));
-//        In in = new In(new File("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/8puzzle/puzzle07.txt"));
+//        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/my3x3.txt");
+//        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/puzzle3x3-unsolvable.txt");
+        In in = new In("/home/yevgen/IdeaProjects/coursera-algorithms/w4-8-puzzle/8puzzle/puzzle07.txt");
         int n = in.readInt();
         int[][] blocks = new int[n][n];
         for (int i = 0; i < n; i++)
