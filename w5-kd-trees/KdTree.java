@@ -14,9 +14,9 @@ public class KdTree {
     private class Node {
         private final Point2D key;
         private final int level;
-        public Node left;
-        public Node right;
-        public final RectHV rect;
+        private Node left;
+        private Node right;
+        private final RectHV rect;
         private final Node parent;
 
         public Node(Point2D key, int level, RectHV rect, Node parent) {
@@ -43,7 +43,7 @@ public class KdTree {
         }
 
         public Comparator<Point2D> comparator() {
-            return level%2 == 0 ? Point2D.X_ORDER : Point2D.Y_ORDER;
+            return level % 2 == 0 ? Point2D.X_ORDER : Point2D.Y_ORDER;
         }
 
         public void draw() {
@@ -101,7 +101,7 @@ public class KdTree {
         if (x == null) return new Node(key, level, rect, parent);
         Comparator<Point2D> cmp = x.comparator();
 
-        if (cmp.compare(key, x.key) == -1) x.left = insert(x.left, key,  level + 1, x.leftRect(), x);
+        if (cmp.compare(key, x.key) < 0) x.left = insert(x.left, key,  level + 1, x.leftRect(), x);
         else x.right = insert(x.right, key,  level + 1, x.rightRect(), x);
         return x;
     }
@@ -114,8 +114,8 @@ public class KdTree {
         if (x == null) return false;
         if (x.key.equals(p)) return true;
 
-        Comparator<Point2D> cmp = level%2 == 0 ? Point2D.X_ORDER : Point2D.Y_ORDER;
-        if (cmp.compare(p, x.key) == -1) return contains(x.left, p,  level + 1);
+        Comparator<Point2D> cmp = x.comparator();
+        if (cmp.compare(p, x.key) < 0) return contains(x.left, p,  level + 1);
         else return contains(x.right, p,  level + 1);
     }
 
@@ -151,7 +151,7 @@ public class KdTree {
 
         Node first, second;
         int cmp = x.comparator().compare(p, x.key);
-        if (cmp == -1) {
+        if (cmp < 0) {
             first = x.left;
             second = x.right;
         } else {
@@ -176,54 +176,6 @@ public class KdTree {
     }
 
     public static void main(String[] args) {
-//        KdTree tree = new KdTree();
-//        tree.insert(new Point2D(.1,.7));
-//        tree.insert(new Point2D(.3,.2));
-//
-//        StdOut.println(tree.nearest(new Point2D(.4,.6)));
-        /*String filename = "/home/yevgen/IdeaProjects/coursera-algorithms/w5-kd-trees/kdtree/circle10.txt";
-        In in = new In(filename);
 
-        // initialize the two data structures with point from standard input
-        PointSET brute = new PointSET();
-        KdTree kdtree = new KdTree();
-        while (!in.isEmpty()) {
-            double x = in.readDouble();
-            double y = in.readDouble();
-            Point2D p = new Point2D(x, y);
-            kdtree.insert(p);
-            brute.insert(p);
-        }
-
-//        Point2D key = new Point2D(0.03078, 0.595703);
-        Point2D key = new Point2D(0.3125, 0.638672);
-
-        Point2D nearestBrute = brute.nearest(key);
-        Point2D nearestKd = kdtree.nearest(key);
-
-        StdOut.println(String.format("Brute: %f %f", nearestBrute.x(), nearestBrute.y()));
-        StdOut.println(String.format("Kd: %f %f", nearestKd.x(), nearestKd.y()));
-//        StdOut.println(String.format("%f %f", x, y));*/
-
-
-        String filename = "/home/yevgen/IdeaProjects/coursera-algorithms/w5-kd-trees/kdtree/circle10.txt";
-        In in = new In(filename);KdTree kdtree = new KdTree();
-        while (!in.isEmpty()) {
-            double x = in.readDouble();
-            double y = in.readDouble();
-            Point2D p = new Point2D(x, y);
-            kdtree.insert(p);
-        }
-        StdDraw.enableDoubleBuffering();
-        kdtree.draw();
-        StdDraw.show();
-
-        /*KdTree kdtree = new KdTree();
-        kdtree.insert(new Point2D(0.5, 0.5));
-        kdtree.insert(new Point2D(0.6, 0.5));
-        kdtree.insert(new Point2D(0.4, 0.4));
-        StdDraw.enableDoubleBuffering();
-        kdtree.draw();
-        StdDraw.show();*/
     }
 }
