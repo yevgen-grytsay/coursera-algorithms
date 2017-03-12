@@ -1,7 +1,10 @@
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdDraw;
 
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 
 
 public class KdTree {
@@ -64,6 +67,18 @@ public class KdTree {
             StdDraw.setPenColor(StdDraw.BLACK);
             key.draw();
         }
+
+        public void range(LinkedList<Point2D> points, RectHV searchRect) {
+            if (searchRect.contains(key)) {
+                points.add(key);
+            }
+            if (left != null && left.rect.intersects(searchRect)) {
+                left.range(points, searchRect);
+            }
+            if (right != null && right.rect.intersects(searchRect)) {
+                right.range(points, searchRect);
+            }
+        }
     }
 
     public KdTree() {
@@ -110,7 +125,9 @@ public class KdTree {
 
     // all points that are inside the rectangle
     public Iterable<Point2D> range(RectHV rect) {
-        return Collections.emptyList();
+        LinkedList<Point2D> points = new LinkedList<>();
+        root.range(points, rect);
+        return points;
     }
 
     // a nearest neighbor in the set to point p; null if the set is empty
