@@ -12,12 +12,36 @@ public class KdTree {
     private int size = 0;
 
     class Node {
-        private Point2D key;
+        private final Point2D key;
+        private final int level;
         public Node left;
         public Node right;
+        public final RectHV rect;
 
-        public Node(Point2D key) {
+        public Node(Point2D key, int level, RectHV rect) {
             this.key = key;
+            this.level = level;
+            this.rect = rect;
+        }
+
+        public RectHV leftRect() {
+            if (level % 2 == 0) {
+                return new RectHV(rect.xmin(), rect.ymin(), key.x(), rect.ymax());
+            } else {
+                return new RectHV(rect.xmin(), rect.ymin(), rect.xmax(), key.y());
+            }
+        }
+
+        public RectHV rightRect() {
+            if (level % 2 == 0) {
+                return new RectHV(key.x(), rect.ymin(), rect.xmax(), rect.ymax());
+            } else {
+                return new RectHV(rect.xmin(), key.y(), rect.xmax(), rect.ymax());
+            }
+        }
+
+        public Comparator<Point2D> comparator() {
+            return level%2 == 0 ? Point2D.X_ORDER : Point2D.Y_ORDER;
         }
     }
 
@@ -33,15 +57,16 @@ public class KdTree {
     }
 
     public void insert(Point2D p) {
-        root = insert(root, p, 0);
+        root = insert(root, p, 0, new RectHV(0, 0, 1, 1));
         ++size;
     }
 
-    private Node insert(Node x, Point2D key, int level) {
-        if (x == null) return new Node(key);
-        Comparator<Point2D> cmp = level%2 == 0 ? Point2D.X_ORDER : Point2D.Y_ORDER;
-        if (cmp.compare(key, x.key) == -1) x.left = insert(x.left, key,  level + 1);
-        else x.right = insert(x.right, key,  level + 1);
+    private Node insert(Node x, Point2D key, int level, RectHV rect) {
+        if (x == null) return new Node(key, level, rect);
+        Comparator<Point2D> cmp = x.comparator();
+
+        if (cmp.compare(key, x.key) == -1) x.left = insert(x.left, key,  level + 1, x.leftRect());
+        else x.right = insert(x.right, key,  level + 1, x.rightRect());
         return x;
     }
 
@@ -76,26 +101,26 @@ public class KdTree {
 
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
-        return nearest(root, p, 0, null);
+        return nearest(root, p, null);
     }
 
-    private Point2D nearest(Node x, Point2D p, int level, Point2D nearest) {
+    private Point2D nearest(Node x, Point2D p, Point2D nearest) {
         if (x == null) return null;
-        double distance = x.key.distanceTo(p);
-        double nearestDistance;
+        double currentDistance = x.key.distanceTo(p);
+        double bestDistance;
         if (nearest != null) {
-            nearestDistance = nearest.distanceTo(p);
+            bestDistance = nearest.distanceTo(p);
         } else {
-            nearestDistance = distance;
+            bestDistance = currentDistance;
             nearest = x.key;
         }
-        if (distance < nearestDistance) {
+        if (currentDistance < bestDistance) {
             nearest = x.key;
         }
 
-        Comparator<Point2D> cmp = level%2 == 0 ? Point2D.X_ORDER : Point2D.Y_ORDER;
         Node first, second;
-        if (cmp.compare(p, x.key) == -1) {
+        int cmp = x.comparator().compare(p, x.key);
+        if (cmp == -1) {
             first = x.left;
             second = x.right;
         } else {
@@ -103,20 +128,18 @@ public class KdTree {
             second = x.left;
         }
 
-        Point2D nf = nearest(first, p, level + 1, nearest);
-        if (nf != null && p.distanceTo(nf) < nearestDistance) {
+        Point2D nf = nearest(first, p, nearest);
+        if (nf != null && p.distanceTo(nf) < bestDistance && !nf.equals(p)) {
             nearest = nf;
-            nearestDistance = p.distanceTo(nf);
-        }
-//        if (nc != null) return nc;
-
-        Point2D ns = nearest(second, p, level + 1, nearest);
-//        if (nc != null) return nc;
-        if (ns != null && p.distanceTo(ns) < nearestDistance) {
-            nearest = ns;
-            nearestDistance = p.distanceTo(ns);
+            bestDistance = p.distanceTo(nf);
         }
 
+        if (second != null && second.rect.distanceTo(p) < bestDistance) {
+            Point2D ns = nearest(second, p, nearest);
+            if (ns != null && p.distanceTo(ns) < bestDistance) {
+                nearest = ns;
+            }
+        }
 
         return nearest;
     }
