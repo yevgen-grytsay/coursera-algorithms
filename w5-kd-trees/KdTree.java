@@ -5,6 +5,7 @@ import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Objects;
 
 
 public class KdTree {
@@ -93,6 +94,7 @@ public class KdTree {
     }
 
     public void insert(Point2D p) {
+        Objects.requireNonNull(p);
         root = insert(root, p, 0, new RectHV(0, 0, 1, 1), root);
         ++size;
     }
@@ -107,6 +109,7 @@ public class KdTree {
     }
 
     public boolean contains(Point2D p) {
+        Objects.requireNonNull(p);
         return contains(root, p, 0);
     }
 
@@ -125,13 +128,15 @@ public class KdTree {
 
     // all points that are inside the rectangle
     public Iterable<Point2D> range(RectHV rect) {
+        Objects.requireNonNull(rect);
         LinkedList<Point2D> points = new LinkedList<>();
-        root.range(points, rect);
+        if (root != null) root.range(points, rect);
         return points;
     }
 
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
+        Objects.requireNonNull(p);
         return nearest(root, p, null);
     }
 

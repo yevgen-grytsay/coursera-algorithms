@@ -2,6 +2,7 @@ import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.TreeSet;
 
 
@@ -21,10 +22,12 @@ public class PointSET {
     }
 
     public void insert(Point2D p) {
+        Objects.requireNonNull(p);
         tree.add(p);
     }
 
     public boolean contains(Point2D p) {
+        Objects.requireNonNull(p);
         return tree.contains(p);
     }
 
@@ -36,6 +39,7 @@ public class PointSET {
 
     // all points that are inside the rectangle
     public Iterable<Point2D> range(RectHV rect) {
+        Objects.requireNonNull(rect);
         LinkedList<Point2D> points = new LinkedList<>();
         for (Point2D p: tree) {
             if (rect.contains(p)) {
@@ -47,6 +51,7 @@ public class PointSET {
 
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
+        Objects.requireNonNull(p);
         Point2D nearest = null;
         double min = 1;
         for (Point2D tp: tree) {
