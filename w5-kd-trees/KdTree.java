@@ -1,7 +1,4 @@
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.Point2D;
-import edu.princeton.cs.algs4.RectHV;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.*;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,11 +14,13 @@ public class KdTree {
         public Node left;
         public Node right;
         public final RectHV rect;
+        private final Node parent;
 
-        public Node(Point2D key, int level, RectHV rect) {
+        public Node(Point2D key, int level, RectHV rect, Node parent) {
             this.key = key;
             this.level = level;
             this.rect = rect;
+            this.parent = parent;
         }
 
         public RectHV leftRect() {
@@ -43,6 +42,28 @@ public class KdTree {
         public Comparator<Point2D> comparator() {
             return level%2 == 0 ? Point2D.X_ORDER : Point2D.Y_ORDER;
         }
+
+        public void draw() {
+            StdDraw.setPenRadius(0.01);
+            StdDraw.setPenColor(StdDraw.RED);
+            if (parent == null) {
+                StdDraw.line(key.x(), 0, key.x(), 1);
+            } else {
+                if (level % 2 == 0) {
+                    StdDraw.line(key.x(), rect.ymin(), key.x(), rect.ymax());
+                } else {
+                    StdDraw.setPenColor(StdDraw.BLUE);
+                    StdDraw.line(rect.xmin(), key.y(), rect.xmax(), key.y());
+                }
+            }
+
+            if (left != null) left.draw();
+            if (right != null) right.draw();
+
+            StdDraw.setPenRadius(0.02);
+            StdDraw.setPenColor(StdDraw.BLACK);
+            key.draw();
+        }
     }
 
     public KdTree() {
@@ -57,16 +78,16 @@ public class KdTree {
     }
 
     public void insert(Point2D p) {
-        root = insert(root, p, 0, new RectHV(0, 0, 1, 1));
+        root = insert(root, p, 0, new RectHV(0, 0, 1, 1), root);
         ++size;
     }
 
-    private Node insert(Node x, Point2D key, int level, RectHV rect) {
-        if (x == null) return new Node(key, level, rect);
+    private Node insert(Node x, Point2D key, int level, RectHV rect, Node parent) {
+        if (x == null) return new Node(key, level, rect, parent);
         Comparator<Point2D> cmp = x.comparator();
 
-        if (cmp.compare(key, x.key) == -1) x.left = insert(x.left, key,  level + 1, x.leftRect());
-        else x.right = insert(x.right, key,  level + 1, x.rightRect());
+        if (cmp.compare(key, x.key) == -1) x.left = insert(x.left, key,  level + 1, x.leftRect(), x);
+        else x.right = insert(x.right, key,  level + 1, x.rightRect(), x);
         return x;
     }
 
@@ -84,14 +105,7 @@ public class KdTree {
     }
 
     public void draw() {
-        draw(root);
-    }
-
-    private void draw(Node n) {
-        if (n == null) return;
-        n.key.draw();
-        draw(n.left);
-        draw(n.right);
+        if (root != null) root.draw();
     }
 
     // all points that are inside the rectangle
@@ -150,7 +164,7 @@ public class KdTree {
 //        tree.insert(new Point2D(.3,.2));
 //
 //        StdOut.println(tree.nearest(new Point2D(.4,.6)));
-        String filename = "/home/yevgen/IdeaProjects/coursera-algorithms/w5-kd-trees/kdtree/circle10.txt";
+        /*String filename = "/home/yevgen/IdeaProjects/coursera-algorithms/w5-kd-trees/kdtree/circle10.txt";
         In in = new In(filename);
 
         // initialize the two data structures with point from standard input
@@ -172,6 +186,27 @@ public class KdTree {
 
         StdOut.println(String.format("Brute: %f %f", nearestBrute.x(), nearestBrute.y()));
         StdOut.println(String.format("Kd: %f %f", nearestKd.x(), nearestKd.y()));
-//        StdOut.println(String.format("%f %f", x, y));
+//        StdOut.println(String.format("%f %f", x, y));*/
+
+
+        String filename = "/home/yevgen/IdeaProjects/coursera-algorithms/w5-kd-trees/kdtree/circle10.txt";
+        In in = new In(filename);KdTree kdtree = new KdTree();
+        while (!in.isEmpty()) {
+            double x = in.readDouble();
+            double y = in.readDouble();
+            Point2D p = new Point2D(x, y);
+            kdtree.insert(p);
+        }
+        StdDraw.enableDoubleBuffering();
+        kdtree.draw();
+        StdDraw.show();
+
+        /*KdTree kdtree = new KdTree();
+        kdtree.insert(new Point2D(0.5, 0.5));
+        kdtree.insert(new Point2D(0.6, 0.5));
+        kdtree.insert(new Point2D(0.4, 0.4));
+        StdDraw.enableDoubleBuffering();
+        kdtree.draw();
+        StdDraw.show();*/
     }
 }
