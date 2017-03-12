@@ -11,7 +11,7 @@ public class KdTree {
     private Node root;
     private int size = 0;
 
-    class Node {
+    private class Node {
         private final Point2D key;
         private final int level;
         public Node left;
